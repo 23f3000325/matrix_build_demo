@@ -1,0 +1,33 @@
+name: Multi-Platform Matrix Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:  # allows manual trigger from GitHub UI
+
+jobs:
+  build:
+    name: Build for Node ${{ matrix.version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version: [14, 16, 18]  # three variants
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: matrix-5f7a2d4
+        run: echo "Building for Node version ${{ matrix.version }}"
+
+      - name: Generate build artifact
+        run: |
+          echo "Build output for Node version ${{ matrix.version }}" > build_output_v${{ matrix.version }}.txt
+          echo "Timestamp: $(date)" >> build_output_v${{ matrix.version }}.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-5f7a2d4-v${{ matrix.version }}
+          path: build_output_v${{ matrix.version }}.txt
